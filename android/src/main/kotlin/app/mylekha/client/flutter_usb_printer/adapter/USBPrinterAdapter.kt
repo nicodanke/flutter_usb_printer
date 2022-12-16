@@ -9,7 +9,6 @@ import android.hardware.usb.*
 import android.os.Build
 import android.util.Base64
 import android.util.Log
-import android.widget.Toast
 import java.nio.charset.Charset
 import java.util.*
 
@@ -54,17 +53,12 @@ class USBPrinterAdapter {
                         )
                         mUsbDevice = usbDevice
                     } else {
-                        Toast.makeText(
-                            context,
-                            "User refused to give USB device permissions" + usbDevice!!.deviceName,
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Log.i(LOG_TAG, "User refuse to give permission")
                     }
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
                 if (mUsbDevice != null) {
-                    Toast.makeText(context, "USB device has been turned off", Toast.LENGTH_LONG)
-                        .show()
+                    Log.i(LOG_TAG, "USB device has been turned off")
                     closeConnectionIfExists()
                 }
             }
@@ -100,11 +94,6 @@ class USBPrinterAdapter {
 
     fun getDeviceList(): List<UsbDevice> {
         if (mUSBManager == null) {
-            Toast.makeText(
-                mContext,
-                "USB Manager is not initialized while get device list",
-                Toast.LENGTH_LONG
-            ).show()
             return emptyList()
         }
         return ArrayList(mUSBManager!!.deviceList.values)
@@ -153,7 +142,7 @@ class USBPrinterAdapter {
                         Log.e(LOG_TAG, "failed to open USB Connection")
                         return false
                     }
-                    Toast.makeText(mContext, "Device connected", Toast.LENGTH_SHORT).show()
+                    Log.i(LOG_TAG, "Device connected")
                     return if (usbDeviceConnection.claimInterface(usbInterface, true)) {
                         mEndPoint = ep
                         mUsbInterface = usbInterface
